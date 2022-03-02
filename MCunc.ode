@@ -1,0 +1,85 @@
+# Single MC model (soma only) from Li & Cleland 2013, DOI: 10.1523/JNEUROSCI.2831-12.2013
+# Solves system of ODEs of the form dx/dt = psi_x(alpha_x(V)(1-x) - beta_x(V)x) for 12 gating variables and ionic conductance kinetics using the Hodgkin-Huxley formalism (Hodgkin and Huxley, 1952).
+
+# Defined parameters
+F=9.64853329e4
+Temp=273.15+35
+RTovF=8314.472*Temp/F
+thick=1
+# PARAMS for soma
+C=1.2
+Rm=30
+#reversal potential
+El=-60
+Ek=-80
+Ena=45
+caCon=0.05
+Eca=70
+#set of conduct that give bursting for I=1-10 or so
+#set bursts {gNa=20,gNaP=0.1,gDR=10,gA=10,gKS=18,gCaL=0.2,gKCa=0.1}
+
+# Functions
+ana(x)=.32*(x+45)/(1-exp(-(x+45)/4))
+bna(x)=-.28*(x+18)/(1-exp((x+18)/5))
+ahna(x)=.128/exp((x+41)/18)
+bhna(x)=4/(1+exp(-(x+18)/5))
+minf(x)=1/(1+exp(-(x+50)/5))
+atau(x)=25*exp((x+45)/13.3)/(1+exp((x+45)/10))
+aminf(x)=1/(1+exp(-(x-17.5)/14))
+hatau(x)=55.5*exp((x+70)/5.1)/(1+exp((x+70)/5))
+ahinf(x)=1/(1+exp((x+41.7)/6))
+ksminf(x)=1/(1+exp(-(x+34)/6.5))
+kshtau(x)=200+330/(1+exp(-(x+71.6)/6.85))
+kshinf(x)=1/(1+exp((x+68)/6.6))
+cala(x)=7.5/(1+exp(-(x-13)/7))
+calb(x)=1.65/(1+exp((x-14)/4))
+calha(x)=.0068/(1+exp((x+30)/12))
+calhb(x)=.06/(1+exp(-x/11))
+kcaa(x,CA)=-500*exp((x-65)/27)*(.015-CA)/(1-exp(-(CA-.015)/.0013))
+nss_dr(x)=((x+100)/150)^8.5849/(0.5747^8.5849+((x+100)/150)^8.5849)
+taun_dr(x)=1/(.27654/exp((x+29.9998)/66.3783)+2.89/(1+exp(-(x-19.0524)/12.8786)))
+kss_dr(x)=.43315*(1+tanh(-(x+13.925)/13.0215))+.1337
+
+aux Ina=gNa*(Na^3)*hNa*(V-Ena)
+aux Inap=gNaP*minf(V)*(V-Ena)
+aux Iacur=gA*A*hA*(V-Ek)
+aux IKs=gKS*KS*hKS*(V-Ek)
+aux ICaL=gCaL*CaL*hCaL*(V-Eca)
+aux IKCa=gKCa*KCa*(V-Ek)
+aux IDr=gDR*(DR^2)*hDR*(V-Ek)
+
+# Initial values, for gdr=15
+V(0)=-79.75
+Na(0)=.0001085
+hNa(0)=.99998
+A(0)=.00961145
+hA(0)=.998242
+KS(0)=.000877
+hKS(0)=.85574
+CaL(0)=.000008
+hCaL(0)=.99368
+KCa(0)=.6217
+DR(0)=.0000039736
+hDR(0)=.999996
+
+param Iapp=0, Ip=0, ton=50, toff=2050
+#maximal conductivity, gDR=70 in other paper
+param gNa=120, gNaP=0.42, gDR=15, gA=10, gKS=84, gCaL=0.85, gKCa=5
+
+# System of gating variables and voltage ODEs
+V'=(Iapp+Ip*heav(t-ton)*heav(toff-t)-(1/Rm*(V-El)+gNa*(Na^3)*hNa*(V-Ena)+gNaP*minf(V)*(V-Ena)+gA*A*hA*(V-Ek)+gKS*KS*hKS*(V-Ek)+gCaL*CaL*hCaL*(V-Eca)+gKCa*KCa*(V-Ek)+gDR*(DR^2)*hDR*(V-Ek)))/C
+Na'=ana(V)*(1-Na)-bna(V)*Na
+hNa'=ahna(V)*(1-hNa)-bhna(V)*hNa
+A'=3.3/atau(V)*(aminf(V)-A)
+hA'=3.3/hatau(V)*(ahinf(V)-hA)
+KS'=1/10*(ksminf(V)-KS)
+hKS'=1/kshtau(V)*(kshinf(V)-hKS)
+CaL'=cala(V)*(1-CaL)-calb(V)*CaL
+hCaL'=calha(V)*(1-hCaL)-calhb(V)*hCaL
+KCa'=kcaa(V,caCon)*(1-KCa)-0.05*KCa
+DR'=(nss_dr(V)-DR)/taun_dr(V)
+hDR'=(kss_dr(V)-hDR)/50
+
+#@ xp=t yp=v, ylo=-100, yhi=30, total=1000, bounds=10000000, maxstor=2000000, meth=Qualst.RK4
+@ xp=t yp=v, xlo=0, xhi=1000, ylo=-100, yhi=30, total=1000, bounds=10000000, maxstor=2000000, meth=cvode
+done
