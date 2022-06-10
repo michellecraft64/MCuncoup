@@ -10,8 +10,11 @@ MCunc.ode
 
 MAT files: 
 dFI.mat -- the FI curve, firing rate (frate) in Hz and input current (Iap_v) in muA/cm^2, with no noise
+
 dFIsgmPt5.mat -- same as dFI.mat but with input noise sigma=0.5
+
 dFIsgm1.mat -- same other dFI[].mat but with input noise sigma=1
+
 dFIsgm1pt5.mat -- same other dFI[].mat but with input noise sigma=1.5
 
 Sub-directories: 
