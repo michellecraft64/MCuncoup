@@ -9,8 +9,12 @@ XPP files to calc bifurcation diagram &amp; PRC in Appendix:
 MCunc.ode
 
 Sub-directories: 
+~/1dats/  Contains .dat files from long Monte Carlo runs of biopysical MC model (spike times)
+
 ~/phenomModel/ Contains Matlab scripts to plot the phenomenological ISI density model. These are analytic solutions to the steady-state density & derived entities.
 
-scpt_simpSDE.m -- the model with additive (constant sigma) noise.
+scpt_simpSDE.m -- the model with additive (constant sigma) noise; on mon. incr. CV/std b/c Gaussian
 
-scpt_SDEmulti.m -- the model with S dependent noise, simple ramp.
+scpt_SDEmulti.m -- the model with S dependent noise, simple ramp to get non-mon. CV/std
+
+scpt_mixGauss.m -- mixture of 2 Gaussians (way more params) that can get non-mon. CV/std
