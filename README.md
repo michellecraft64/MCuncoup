@@ -5,8 +5,14 @@ MCsigFast.m -- runs the MC model, saves spike times in flName.dat (flName is str
 
 drv_varySig.m -- driver file the calls McsigFast.m, specifies applied current (Iapp), flName (in flNameB variable), input noise (sigm vector), and required number of spikes (ReqNums variable).
 
-XPP files to calc bifurcation diagram &amp; PRC in Appendix:
+XPP files to calc bifurcation diagram and PRC in Appendix:
 MCunc.ode
+
+MAT files: 
+dFI.mat -- the FI curve, firing rate (frate) in Hz and input current (Iap_v) in muA/cm^2, with no noise
+dFIsgmPt5.mat -- same as dFI.mat but with input noise sigma=0.5
+dFIsgm1.mat -- same other dFI[].mat but with input noise sigma=1
+dFIsgm1pt5.mat -- same other dFI[].mat but with input noise sigma=1.5
 
 Sub-directories: 
 ~/1dats/  Contains .dat files from long Monte Carlo runs of biopysical MC model (spike times)
