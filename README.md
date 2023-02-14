@@ -1,5 +1,5 @@
 # MCuncoup
-Program files referenced in "The effects of background noise on a biophysical model of olfactory bulb mitral cells" by M. Craft &amp; C. Ly, #### (journal info. later)
+Program files referenced in "The effects of background noise on a biophysical model of olfactory bulb mitral cells." Bulletin of Mathematical Biology (107) Vol. 84 pp:1--20. https://link.springer.com/article/10.1007/s11538-022-01066-8
 
 MCsigFast.m -- runs the MC model, saves spike times in flName.dat (flName is string input), spike times are appended to the flat .dat file, separated by \n; assuming sub-directory ~/1dats/ exists.
 
